@@ -12,6 +12,10 @@ class MasterNotFoundError(ConnectionError):
     pass
 
 
+class SentinelNotFoundError(ConnectionError):
+    pass
+
+
 class SlaveNotFoundError(ConnectionError):
     pass
 
@@ -242,6 +246,8 @@ class Sentinel(SentinelCommands):
                     self.sentinels[0],
                 )
                 return state["ip"], state["port"]
+        if masters:
+            raise SentinelNotFoundError(f"No sentinel was reached in time")
         raise MasterNotFoundError(f"No master found for {service_name!r}")
 
     def filter_slaves(self, slaves):
